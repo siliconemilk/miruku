@@ -1,0 +1,24 @@
+.ui-dialog-titlebar-close {
+  visibility: hidden;
+}
+
+.ui-dialog .ui-dialog-title{
+	width: 100%;
+}
+.ui-dialog-title{
+	float: none !important;
+	display: block;
+	width: 100%;
+	text-align: center;
+}
+
+.ui-dialog-content{
+	vertical-align: middle;
+	text-align: center; 
+}
+
+.menu-content{
+	position: relative; 
+	top: 10%;
+	text-align: center;
+}
