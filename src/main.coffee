@@ -2,19 +2,23 @@ $ ->
 	init()
 
 	#displayMainMenu(); 
-	dialogFactory = new DialogFactory()
-	dialogFactory.register("mainMenu", displayMainMenu)
-	dialogFactory.show("mainMenu")
+	window.dialogFactory = new DialogFactory()
+	#dialogFactory.register("mainMenu", mainMenuDialog)
+	window.dialogFactory.register("mainMenu", mainMenuDialog())
+	window.dialogFactory.show("mainMenu")
 	$("#clickme").on('click', (event) -> enableEdit() )
 
 enableEdit = () ->
     for item in document.body.getElementsByTagName("*")
     	if $(item).hasClass('draggable-element')
-    		$(item).draggable("option", "disabled", false)
+    		$(item).draggable({cancel: false, grid: [10,10], start: (event, ui) -> 
+    			$(this).addClass('noclick') 
+    			return
+    			})
 
-    displayMainMenu()
+    window.dialogFactory.show("mainMenu")
 
 init = () ->
 	for item in document.body.getElementsByTagName("*")
     	if $(item).hasClass('draggable-element')
-    		$(item).draggable({disabled: true})
+    		$(item).draggable({disabled: true, grid: [10,10]})
