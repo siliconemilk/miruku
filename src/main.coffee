@@ -1,7 +1,27 @@
-$.fn.classList = () -> return @className.split(/\s+/)
+`(function ($) {
+    $.fn.classes = function (callback) {
+        var classes = [];
+        $.each(this, function (i, v) {
+            var splitClassName = v.className.split(/\s+/);
+            for (var j in splitClassName) {
+                var className = splitClassName[j];
+                if ('' !== className) {
+                    classes.push(className); // replace with 'classes.unshift(className);' to put classes in order of their appearance
+                }
+            }
+        });
+        classes = $.unique(classes);
+        if ('function' === typeof callback) {
+            for (var i in classes) {
+                callback(classes[i]);
+            }
+        }
+        return classes;
+    };
+})(jQuery);`
 
 $ ->
-	#displayMainMenu(); 
+
 	window.dialogFactory = new DialogFactory()
 	#dialogFactory.register("mainMenu", mainMenuDialog)
 	window.dialogFactory.register("mainMenu", mainMenuDialog())
@@ -16,8 +36,10 @@ enableEdit = () ->
     			return
     			})
 
-    	for someClass in $(item).classList
-    		console.log($(someClass).text)
+    		myClasses = $(item).classes()
+    		$.each(myClasses, (i, v) ->
+    			console.log(v)
+    			)
 
     $("#clickme").text("DISABLE EDITING")
 
