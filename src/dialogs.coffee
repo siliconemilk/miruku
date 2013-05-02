@@ -16,9 +16,9 @@ mainMenuDialog = () ->
 	DialogConstruct = """
 	<div id="MenuDialog">
 		<div class="menu-content">
-			<button id="start-game" class="draggable-element">Start Game</button><br/>
-			<button id="options">Options</button><br/>
-			<button id="how-to">How-To</button>
+			<button id="start-game" class="draggable-element editable">Start Game</button><br/>
+			<button id="options" class="draggable-element editable">Options</button><br/>
+			<button id="how-to" class="draggable-element editable">How-To</button>
 		</div>
 	</div>
 	"""

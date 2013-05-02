@@ -1,6 +1,6 @@
-$ ->
-	init()
+$.fn.classList = () -> return @className.split(/\s+/)
 
+$ ->
 	#displayMainMenu(); 
 	window.dialogFactory = new DialogFactory()
 	#dialogFactory.register("mainMenu", mainMenuDialog)
@@ -16,9 +16,23 @@ enableEdit = () ->
     			return
     			})
 
+    	for someClass in $(item).classList
+    		console.log($(someClass).text)
+
+    $("#clickme").text("DISABLE EDITING")
+
+    $("#clickme").off("click")
+    $("#clickme").on("click", (event) -> disableEdit())
+
     window.dialogFactory.show("mainMenu")
 
-init = () ->
+disableEdit = () ->
 	for item in document.body.getElementsByTagName("*")
-    	if $(item).hasClass('draggable-element')
-    		$(item).draggable({disabled: true, grid: [10,10]})
+		if $(item).hasClass('draggable-element')
+			$(item).draggable("option", "cancel", "input,textarea,button,select,option")
+
+	editButton = $("#clickme")
+	editButton.text("ENABLE EDITING")
+
+	editButton.off("click")
+	editButton.on('click', (event) -> enableEdit())
