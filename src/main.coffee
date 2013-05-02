@@ -39,6 +39,7 @@ disableSubmitOnClick = (event, ui) ->
 
 followOnDrag = (event, ui) ->
     width = $(this).outerWidth()
+    console.log(width)
     offset = {}
     offset.left = (width + ui.offset.left)
     offset.top = ui.offset.top
@@ -55,6 +56,7 @@ enableEdit = () ->
   
             classes = $(item).classes()
 
+            $(item).next().offset({left: $(item).outerWidth() + $(item).offset().left, top: $(item).offset().top})
             for itemClass in classes
                 switch itemClass
                     when "draggable-element"
