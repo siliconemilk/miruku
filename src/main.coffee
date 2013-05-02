@@ -1,3 +1,6 @@
+#helper class listing function for DOM elements
+#pulled from http://stackoverflow.com/a/11232541
+#Thank you, Will!
 `(function ($) {
     $.fn.classes = function (callback) {
         var classes = [];
@@ -22,39 +25,65 @@
 
 $ ->
 
-	window.dialogFactory = new DialogFactory()
-	#dialogFactory.register("mainMenu", mainMenuDialog)
-	window.dialogFactory.register("mainMenu", mainMenuDialog())
-	window.dialogFactory.show("mainMenu")
-	$("#clickme").on('click', (event) -> enableEdit() )
+    window.dialogFactory = new DialogFactory()
+    #dialogFactory.register("mainMenu", mainMenuDialog)
+    window.dialogFactory.register("mainMenu", mainMenuDialog())
+    window.dialogFactory.show("mainMenu")
+    $("#clickme").one("click", enableEdit )
+
+#prevents triggering of submit action on button immediately after dragging
+#buttons will automatically remove noclick class after a successful drag
+disableSubmitOnClick = (event, ui) ->
+    $(this).addClass('noclick')
+    return
+
+followOnDrag = (event, ui) ->
+    width = $(this).outerWidth()
+    offset = {}
+    offset.left = (width + ui.offset.left)
+    offset.top = ui.offset.top
+
+    $(this).next().offset(offset)
 
 enableEdit = () ->
-    for item in document.body.getElementsByTagName("*")
-    	if $(item).hasClass('draggable-element')
-    		$(item).draggable({cancel: false, grid: [10,10], start: (event, ui) -> 
-    			$(this).addClass('noclick') 
-    			return
-    			})
+    $('.editable').after('<button class="tool"><img src="./content/cog_alt_16x16.png"></img></button>')
 
-    		myClasses = $(item).classes()
-    		$.each(myClasses, (i, v) ->
-    			console.log(v)
-    			)
+    elements = document.body.getElementsByTagName("*")
+
+    for item in elements
+        if $(item).hasClass("editable")
+  
+            classes = $(item).classes()
+
+            for itemClass in classes
+                switch itemClass
+                    when "draggable-element"
+                        $(item).draggable({cancel: false, grid: [10,10], start: disableSubmitOnClick, drag: followOnDrag})
+
 
     $("#clickme").text("DISABLE EDITING")
 
-    $("#clickme").off("click")
-    $("#clickme").on("click", (event) -> disableEdit())
+    #$("#clickme").off("click")
+    $("#clickme").one("click", disableEdit)
 
     window.dialogFactory.show("mainMenu")
 
 disableEdit = () ->
-	for item in document.body.getElementsByTagName("*")
-		if $(item).hasClass('draggable-element')
-			$(item).draggable("option", "cancel", "input,textarea,button,select,option")
+    $('.tool').remove()
 
-	editButton = $("#clickme")
-	editButton.text("ENABLE EDITING")
+    elements = document.body.getElementsByTagName("*")
+    
+    for item in elements
+        if $(item).hasClass("editable")
+            classes = $(item).classes()
 
-	editButton.off("click")
-	editButton.on('click', (event) -> enableEdit())
+            for itemClass in classes
+                switch itemClass
+                    when "draggable-element"
+                        $(item).draggable("option", "cancel", "input, textarea, button, select, option")
+
+    editButton = $("#clickme")
+    editButton.text("ENABLE EDITING")
+
+    #editButton.off("click")
+    editButton.one('click', enableEdit)
