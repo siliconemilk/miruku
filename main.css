@@ -1,15 +1,12 @@
 .ui-dialog-titlebar-close {
-  visibility: hidden;
+  display: none;
 }
 
-.ui-dialog .ui-dialog-title{
-	width: 100%;
-}
 .ui-dialog-title{
 	float: none !important;
 	display: block;
-	width: 100%;
 	text-align: center;
+	width: 100% !important;
 }
 
 .ui-dialog-content{
@@ -25,14 +22,22 @@
 .absCenter{
 	position: relative;
 	left: -50%;
-	border: dotted red 1px;
 }
 .draggable-element{
-	display: inline;
+	display: inline-block;
 	margin: 0;
 }
 
 .tool{
 	position: absolute;
-	margin: 0;
+	width: auto !important;
+	background-color: orange !important;
+}
+.tool .ui-widget{
+	font-size: 100% !important; 
+}
+
+.ui-icon
+{
+    background-image: url(http://code.jquery.com/ui/1.10.2/themes/smoothness/images/ui-icons_cd0a0a_256x240.png) !important;
 }

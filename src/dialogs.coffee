@@ -27,7 +27,6 @@ mainMenuDialog = () ->
         </div>
     </div>
     """
-
     NewDialog = $(DialogConstruct)
 
     NewDialog.dialog({
@@ -40,6 +39,7 @@ mainMenuDialog = () ->
         title: 'Miruku Menu'
         })
 
+    $('.absCenter > :button').filter('.editable').button()
     $("#start-game").on('click', (event) -> 
         if $(this).hasClass('noclick')
             $(this).removeClass('noclick')

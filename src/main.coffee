@@ -33,3 +33,4 @@ $ ->
     $("#showMenu").on("click", () -> 
         window.dialogFactory.show("mainMenu")
         )
+    $(document).on("dialogcreate", readyEdit)

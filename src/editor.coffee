@@ -13,8 +13,17 @@ followOnDrag = (event, ui) ->
 
     $(this).next().offset(offset)
 
+readyEdit = (event, ui) ->
+    if window.editing
+        enableEdit()
+
 enableEdit = () ->
-    $('.editable').after('<button class="tool"><img src="./content/cog_alt_16x16.png"></img></button>')
+    #$('.editable').after('<button class="tool"><img src="./content/cog_alt_16x16.png"></img></button>')
+    $('.editable').after('<button class="tool"/>')
+    $('.tool').button({
+        text: false,
+        icons: { primary: "ui-icon-wrench"}
+        })
 
     elements = document.body.getElementsByTagName("*")
 
@@ -28,13 +37,16 @@ enableEdit = () ->
             for itemClass in classes
                 switch itemClass
                     when "draggable-element"
-                        $(item).draggable({cancel: false, grid: [10,10], start: disableSubmitOnClick, drag: followOnDrag})
+                        #if not initialized yet, we can safely initializle
+                        if $.inArray("ui-draggable", classes) < 0
+                            $(item).draggable({cancel: false, grid: [10,10], start: disableSubmitOnClick, drag: followOnDrag})
 
 
-    $("#clickme").text("DISABLE EDITING")
+    editButton = $("#clickme")
+    editButton.text("DISABLE EDITING")
+    editButton.one("click", disableEdit)
 
-    #$("#clickme").off("click")
-    $("#clickme").one("click", disableEdit)
+    window.editing = true
 
     
 disableEdit = () ->
@@ -55,6 +67,6 @@ disableEdit = () ->
 
     editButton = $("#clickme")
     editButton.text("ENABLE EDITING")
-
-    #editButton.off("click")
     editButton.one('click', enableEdit)
+
+    window.editiing = false
