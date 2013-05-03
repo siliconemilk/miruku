@@ -8,6 +8,7 @@ option '-d', '--deploy [DIR]', 'deployment dir'
 
 #file inclusion order matters! Least->Most Dependant
 sourceFiles = [
+    'editor'
     'Character'
     'game'
     'dialogs'
@@ -44,20 +45,24 @@ task 'build-monolith', 'Build a single application file from source.', (options)
                 
                 #fs.unlink "lib/app.coffee", (err) -> util.log err if err
 
-
+#FOR THE LOVE OF ALL THAT IS BACON, REWRITE THIS TO PROPERLY HANDLE DEFINES
+#SUCH THAT #ifdef {definition in defines} UNTIL #endif
 simplePreprocessor = (file) ->
 
     @lines = fs.readFileSync(file).toString().split('\n')
     
     for line, i in @lines
         if line.indexOf("#ifdef DEBUG") isnt -1
+            util.log("detected DEBUG ifdef")
             lines[i] = ""
             i = i + 1
             line = lines[i]
             until line.indexOf("#endif") isnt -1
+                util.log("...looking")
                 lines[i] = ""
                 i = i + 1
                 line = lines[i]
+            util.log("ending DEBUG ifdef block")
             lines[i] = ""
-
-    fs.writeFile "lib/new.coffee", @lines.join(''), 'utf8'
+    util.log("writing to app.coffee")
+    fs.writeFile "lib/app.coffee", @lines.join('\n'), 'utf8'

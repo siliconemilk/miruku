@@ -4,6 +4,9 @@ class DialogFactory
         @dialogs = {}
 
     show: (dialog_name) ->
+        if !@dialogs[dialog_name]?
+            @register(dialog_name, mainMenuDialog())
+
         if !@dialogs[dialog_name].dialog("isOpen")
             @dialogs[dialog_name].dialog("open")
         else
