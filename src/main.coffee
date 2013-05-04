@@ -26,11 +26,12 @@
 $ ->
 
     window.dialogFactory = new DialogFactory()
-    #dialogFactory.register("mainMenu", mainMenuDialog)
+    window.dialogFactory.register("editMenu", editMenuDialog())
     #window.dialogFactory.register("mainMenu", mainMenuDialog())
     #window.dialogFactory.show("mainMenu")
-    $("#clickme").one("click", enableEdit )
+    $("#clickme").one("click", () -> initEdit() )
     $("#showMenu").on("click", () -> 
         window.dialogFactory.show("mainMenu")
         )
-    $(document).on("dialogcreate", readyEdit)
+    $('#derp').button()
+    #$(document).on("dialogcreate", readyEdit)

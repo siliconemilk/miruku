@@ -48,5 +48,32 @@ mainMenuDialog = () ->
 
     return NewDialog
 
-loadMenuDialog = () ->
-    DialogConstruct
+editMenuDialog = () ->
+    DialogConstruct = """
+    <div id="EditDialog">
+        <div class="menu-content">
+            <div class="absCenter">
+                <button id="one">One</button>
+                <button id="two">Two</button>
+                <button id="three">Three</button>
+            </div>
+        </div>
+    </div>
+    """
+
+    NewDialog = $(DialogConstruct)
+
+    NewDialog.dialog({
+        height: '180',
+        width: '180',
+        modal: false,
+        resizable: false,
+        closeOnEscape: true, 
+        autoOpen: false,
+        title: 'Edit Menu'
+        })
+    $('.absCenter > :button').filter('.editable').button()
+
+    return NewDialog
+#loadMenuDialog = () ->
+    #DialogConstruct
