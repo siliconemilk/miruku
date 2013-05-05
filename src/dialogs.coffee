@@ -15,6 +15,9 @@ class DialogFactory
     register: (name, dialog) ->
         @dialogs[name] = dialog
 
+    unregister: (name) -> 
+        @dialogs.splice($.inArray(name, @dialogs), 1)
+
 mainMenuDialog = () ->
     DialogConstruct = """
     <div id="MenuDialog">
@@ -33,7 +36,6 @@ mainMenuDialog = () ->
         height: '240',
         width: '320',
         modal: true,
-        resizable: false,
         closeOnEscape: false, 
         autoOpen: false,
         title: 'Miruku Menu'
