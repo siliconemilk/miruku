@@ -15,8 +15,6 @@ class DialogFactory
     register: (name, dialog) ->
         @dialogs[name] = dialog
 
-    unregister: (name) -> 
-        @dialogs.splice($.inArray(name, @dialogs), 1)
 
 mainMenuDialog = () ->
     DialogConstruct = """

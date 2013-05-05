@@ -12,6 +12,26 @@ followOnDrag = (event, ui) ->
 
     $(this).next().offset(offset)
 
+alignToolWithTarget = (target) ->
+    parent = $(target).parent()
+    hidden = $(parent).is(":hidden")
+
+    if hidden
+        $(parent).show()
+
+    for editable in $(target).find('.editable')
+            #lets get kludgey
+
+        width = $(editable).outerWidth()
+        offset = {}
+        offset.left = (width + $(editable).offset().left)
+        offset.top = $(editable).offset().top
+
+        $(editable).next().offset(offset)
+
+    if hidden and parent?
+        $(parent).hide()
+
 #INIT EDIT -> editing is true, register for open/close/create/click events as appropriate 
 
 #ENABLE EDIT -> if editing is true, find all editable and append tool. 
@@ -27,14 +47,16 @@ followOnDrag = (event, ui) ->
 initEdit = () ->
 #register event handlers
     window.editing = true
-    enableEdit(document)
     #dialog creation
     #$('.ui-dialog').on('dialogcreate', (event, ui) -> enableEdit(event.target))
-    $(document).on('dialogopen', (event, ui) -> enableEdit(event.target))
+    $(document).on('dialogopen', (event, ui) -> alignToolWithTarget(event.target))
+    $(document).on('dialogbeforeopen', (event, ui) -> enableEdit(event.target))
     #$(document).on('dialogclose', (event, ui) -> window.dialogFactory.unregister("mainMenu"))
 
     #tool creation
     $(document).on('click', '.tool', () -> window.dialogFactory.show("editMenu"))
+
+    enableEdit(document)
 
     editButton = $("#clickme")
     editButton.text("DISABLE EDITING")
@@ -44,9 +66,9 @@ initEdit = () ->
 deinitEdit = () ->
     window.editing = false
     disableEdit(document)
-    $(document).off('dialogcreate')
+
     $(document).off('dialogopen')
-    #$(document).off('dialogclose')
+    $(document).off('dialogbeforeopen')
 
     $(document).off("click", ".tool")
 
@@ -57,6 +79,7 @@ deinitEdit = () ->
 
 enableEdit = (target) -> 
     if window.editing and not $(target).find('.editable').is('.editing')
+
         $(target).find('.editable').after('<button class="tool"></button>')
 
         tool = $('.tool')
@@ -65,19 +88,7 @@ enableEdit = (target) ->
         icons: { primary: "ui-icon-wrench"}
         })
 
-        for editable in $(target).find('.editable')
-            #lets get kludgey
-
-            hidden = $(editable).parentsUntil('body').is(":hidden")
-            if hidden
-                $(editable).parentsUntil('body').show()
-                console.log(target)
-            width = $(editable).outerWidth()
-            offset = {}
-            offset.left = (width + $(editable).offset().left)
-            offset.top = $(editable).offset().top
-
-            $(editable).next().offset(offset)
+        alignToolWithTarget(target)
 
         $(target).find('.editable.draggable-element').draggable({cancel: false, grid: [10, 10], start: disableSubmitOnClick, drag: followOnDrag})
         $(target).find('.editable').addClass("editing")

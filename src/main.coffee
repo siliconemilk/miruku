@@ -1,26 +1,31 @@
-#helper class listing function for DOM elements
-#pulled from http://stackoverflow.com/a/11232541
-#Thank you, Will!
+#to add 'beforeOpen' event to jquery ui dialogs 
 `(function ($) {
-    $.fn.classes = function (callback) {
-        var classes = [];
-        $.each(this, function (i, v) {
-            var splitClassName = v.className.split(/\s+/);
-            for (var j in splitClassName) {
-                var className = splitClassName[j];
-                if ('' !== className) {
-                    classes.push(className); // replace with 'classes.unshift(className);' to put classes in order of their appearance
-                }
-            }
-        });
-        classes = $.unique(classes);
-        if ('function' === typeof callback) {
-            for (var i in classes) {
-                callback(classes[i]);
-            }
+    $.ui.dialog.prototype.open = function (event){ 
+        var that = this;
+        if(false === this._trigger('beforeOpen', event)){
+            return;
         }
-        return classes;
-    };
+        if ( this._isOpen ) {
+            if ( this._moveToTop() ) {
+                this._focusTabbable();
+            }
+            return;
+        }
+            
+        this._isOpen = true;
+        this.opener = $( this.document[0].activeElement );
+
+        this._size();
+        this._position();
+        this._createOverlay();
+        this._moveToTop( null, true );
+        this._show( this.uiDialog, this.options.show, function() {
+            that._focusTabbable();
+            that._trigger("focus");
+        });
+
+        this._trigger("open");
+        }
 })(jQuery);`
 
 $ ->
