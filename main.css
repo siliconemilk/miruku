@@ -29,7 +29,7 @@
 }
 
 .tool{
-	position: fixed;
+	position: absolute;
 	width: auto !important;
 	background-color: orange !important;
 }
