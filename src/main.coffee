@@ -29,14 +29,12 @@
 })(jQuery);`
 
 $ ->
-
-    window.dialogFactory = new DialogFactory()
-    window.dialogFactory.register("editMenu", editMenuDialog())
-    #window.dialogFactory.register("mainMenu", mainMenuDialog())
-    #window.dialogFactory.show("mainMenu")
     $("#clickme").one("click", () -> initEdit() )
     $("#showMenu").on("click", () -> 
-        window.dialogFactory.show("mainMenu")
+        createDialog("menuDialog")
         )
     $('#derp').button()
-    #$(document).on("dialogcreate", readyEdit)
+
+domain = "localhost"
+port = 8080
+root = "/"

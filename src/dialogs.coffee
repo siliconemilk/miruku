@@ -1,79 +1,43 @@
-#belongs to a class such as Game (mainMenu), a character instance (chat dialog), or scene (battles, events)
-class DialogFactory
-    constructor: ()->
-        @dialogs = {}
+#Types of dialogs we would possibly want to create: 
+#   menu (main menu, options, loading, etc.). Would we want to simply replace the contents of a single dialog though for swapping menus?
+#   submenu(non-modal dialog) - not entirely sure of a scenario this would come up but it could be helpful
+#   chatter(chat between characters)
 
-    show: (dialog_name) ->
-        if !@dialogs[dialog_name]?
-            @register(dialog_name, mainMenuDialog())
+#type: string containing type of dialog we would like to attempt to create.
+#   type will substitue name of html file such as domain:port/content/{type}.html
+#target: DOM element which is to be considered the target of new dialog. For things such as the edit menu used by the editor  
+createDialog = (type, target) ->
+    $('body').append("<div id=\"" + type + "container\"></div>")
+    DialogConstruct = $('#' + type + "container")
+    $(DialogConstruct).load("http://" + domain + ":" + port + root + "content/" + type + ".html", () -> 
+        someHeight = $('#' + type).data('height')
+        someWidth =  $('#' + type).data('width')
 
-        if !@dialogs[dialog_name].dialog("isOpen")
-            @dialogs[dialog_name].dialog("open")
-        else
-            console.log("already open")
-
-    register: (name, dialog) ->
-        @dialogs[name] = dialog
-
-
-mainMenuDialog = () ->
-    DialogConstruct = """
-    <div id="MenuDialog">
-        <div class="menu-content">
-            <div class="absCenter">
-                <button id="start-game" class="draggable-element editable">Start Game</button>
-                <button id="options" class="draggable-element editable">Options</button>
-                <button id="how-to" class="draggable-element editable">How-To</button>
-            </div>
-        </div>
-    </div>
-    """
-    NewDialog = $(DialogConstruct)
-
-    NewDialog.dialog({
-        height: '240',
-        width: '320',
-        modal: true,
-        closeOnEscape: false, 
+        console.log(someWidth + " and " + someHeight)
+        $(this).dialog({
+        height: someHeight, 
+        width: someWidth, 
+        modal: $('#' + type).data('modal'),
+        resizable: false, 
         autoOpen: false,
-        title: 'Miruku Menu'
+        title: $('#' + type).data('title')
+        close: (event, ui) -> 
+            $(this).dialog('destroy').remove()
+            $(document).off('click', '#start-game')
         })
 
-    $('.absCenter > :button').filter('.editable').button()
-    $("#start-game").on('click', (event) -> 
+        $(this).find(':button').button()
+
+        #delayed opening of the dialog so we get the proper width of the editable elements within the dialog's ajax content
+        $(DialogConstruct).dialog("open")
+        )
+
+    NewDialog = $(DialogConstruct)
+
+    $(document).on('click', '#start-game', (event) -> 
         if $(this).hasClass('noclick')
             $(this).removeClass('noclick')
         else 
             NewDialog.dialog("close"))
 
     return NewDialog
-
-editMenuDialog = () ->
-    DialogConstruct = """
-    <div id="EditDialog">
-        <div class="menu-content">
-            <div class="absCenter">
-                <button id="one">One</button>
-                <button id="two">Two</button>
-                <button id="three">Three</button>
-            </div>
-        </div>
-    </div>
-    """
-
-    NewDialog = $(DialogConstruct)
-
-    NewDialog.dialog({
-        height: '180',
-        width: '180',
-        modal: false,
-        resizable: false,
-        closeOnEscape: true, 
-        autoOpen: false,
-        title: 'Edit Menu'
-        })
-    $('.absCenter > :button').filter('.editable').button()
-
-    return NewDialog
-#loadMenuDialog = () ->
-    #DialogConstruct

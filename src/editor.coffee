@@ -16,12 +16,11 @@ alignToolWithTarget = (target) ->
     parent = $(target).parent()
     hidden = $(parent).is(":hidden")
 
+    #if display:none, we're going to show parent briefly to get the width of its hidden elements
     if hidden
         $(parent).show()
 
     for editable in $(target).find('.editable')
-            #lets get kludgey
-
         width = $(editable).outerWidth()
         offset = {}
         offset.left = (width + $(editable).offset().left)
@@ -29,6 +28,7 @@ alignToolWithTarget = (target) ->
 
         $(editable).next().offset(offset)
 
+    #and then we will hide the hidden element once again
     if hidden and parent?
         $(parent).hide()
 
@@ -48,13 +48,12 @@ initEdit = () ->
 #register event handlers
     window.editing = true
     #dialog creation
-    #$('.ui-dialog').on('dialogcreate', (event, ui) -> enableEdit(event.target))
+    #$(document).on('dialogcreate', (event, ui) -> enableEdit(event.target))
     $(document).on('dialogopen', (event, ui) -> alignToolWithTarget(event.target))
     $(document).on('dialogbeforeopen', (event, ui) -> enableEdit(event.target))
-    #$(document).on('dialogclose', (event, ui) -> window.dialogFactory.unregister("mainMenu"))
 
     #tool creation
-    $(document).on('click', '.tool', () -> window.dialogFactory.show("editMenu"))
+    $(document).on('click', '.tool', () -> createDialog("editMenuDialog"))
 
     enableEdit(document)
 
@@ -79,14 +78,8 @@ deinitEdit = () ->
 
 enableEdit = (target) -> 
     if window.editing and not $(target).find('.editable').is('.editing')
-
-        $(target).find('.editable').after('<button class="tool"></button>')
-
-        tool = $('.tool')
-        tool.button({
-        text: false, 
-        icons: { primary: "ui-icon-wrench"}
-        })
+        console.log($(target).find('.editable'))
+        $(target).find('.editable').after('<button class="tool"></button>').next().button({text: false, icons: {primary: "ui-icon-wrench"}})
 
         alignToolWithTarget(target)
 
